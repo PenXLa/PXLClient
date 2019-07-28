@@ -41,7 +41,7 @@ namespace PXLClient.netKernel {
             socket.Close();
         }
 
-        protected virtual void onReceived(Package pak) {
+        protected virtual void onReceived(byte[] pak) {
 
         }
         protected virtual void onDisconnect() {
@@ -57,7 +57,7 @@ namespace PXLClient.netKernel {
 
 
         private void receiver() {
-            Package pak;
+            byte[] pak;
             while (true) {
                 try {
                     pak = NetUtils.getPack(socket,POINTER_SIZE);
@@ -70,9 +70,9 @@ namespace PXLClient.netKernel {
             }
         }
 
-        public void sendPackage(Package pak) {
+        public void sendPackage(byte[] pak) {
             byte[] data, dataWithHead;
-            data = pak.data;
+            data = pak;
             dataWithHead = new byte[POINTER_SIZE + data.Length];
             Array.Copy(NetUtils.integer2bin(data.Length, POINTER_SIZE), dataWithHead, POINTER_SIZE);
             Array.Copy(data, 0, dataWithHead, POINTER_SIZE, data.Length);
@@ -138,7 +138,7 @@ namespace PXLClient.netKernel {
             return BitConverter.ToDouble(bin, off);
         }
 
-        public static Package getPack(Socket socket, int headSize) {
+        public static byte[] getPack(Socket socket, int headSize) {
             byte[] sizeb = new byte[headSize];
             byte[] data = null;
             int res = socket.Receive(sizeb, headSize, SocketFlags.None);
@@ -148,7 +148,7 @@ namespace PXLClient.netKernel {
                 data = new byte[size];
                 socket.Receive(data, size, SocketFlags.None);
             }
-            return new Package(data);
+            return data;
         }
 
     }
