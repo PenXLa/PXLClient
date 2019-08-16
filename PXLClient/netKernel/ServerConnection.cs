@@ -61,12 +61,11 @@ namespace PXLClient.netKernel {
             while (true) {
                 try {
                     pak = NetUtils.getPack(socket,POINTER_SIZE);
-                    onReceived(pak);
-                }
-                catch {
+                } catch {
                     onLostConnection();
                     break;
                 }
+                onReceived(pak);
             }
         }
 
