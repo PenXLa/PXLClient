@@ -145,7 +145,9 @@ namespace PXLClient.netKernel {
             else if (res > 0) {
                 int size = (int)NetUtils.bin2integer(sizeb, 0, headSize);
                 data = new byte[size];
-                socket.Receive(data, size, SocketFlags.None);
+                for (int readLen = 0; readLen < size;) {
+                    readLen += socket.Receive(data, readLen, size - readLen, SocketFlags.None);
+                }
             }
             return data;
         }
